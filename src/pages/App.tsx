@@ -3,10 +3,10 @@ import { Routes, Route, Outlet, Navigate, useNavigate } from "react-router-dom";
 import { Container, LoadingOverlay } from "@mantine/core";
 import { selectIsAuthenticated } from "@/store/auth/selectors";
 import { useAppSelector } from "@/store/hooks";
-import LayoutAppShell from "@/components/Layout";
 import SimpleVerticalLayout from "@/components/Layout/SimpleVerticalLayout";
 
 const Login = lazy(() => import("@/pages/auth"));
+const Queue = lazy(() => import("@/pages/queue"));
 
 const NotFound = lazy(() => import("@/components/NotFound/NotFoundPage"));
 
@@ -16,7 +16,7 @@ function App() {
 			<Routes>
 				<Route path="/" element={<Outlet />}>
 					<Route element={<RequireAuth />}>
-						<Route index element={<>Hello</>} />
+						<Route index element={<Queue />} />
 					</Route>
 
 					<Route path="/login" element={<IsUserRedirect />}>

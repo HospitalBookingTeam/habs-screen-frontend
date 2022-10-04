@@ -1,17 +1,23 @@
 import { Room } from './room'
 
-export type AuthUser = {
+export interface AuthUser {
 	id: number
-	username: string
-	name: string
+	roomNumber: string
+	floor: string
+	note: string
+	departmentId: number
+	roomTypeId: number
+	department: string
+	roomType: string
 }
 
 export type AuthState = {
 	token: string
 	isAuthenticated: boolean
+	information?: AuthUser
 }
 
 export type AuthForm = {
-	username: string
 	password: string
+	roomId: number | null
 }

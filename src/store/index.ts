@@ -12,6 +12,7 @@ import {
 	REGISTER,
 } from 'redux-persist'
 import { api } from '@/store/api'
+import { doctorApi } from '@/store/doctorApi'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
 import { rtkQueryErrorLogger } from './middleware/apiListener'
 
@@ -23,6 +24,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
 	[api.reducerPath]: api.reducer,
+	[doctorApi.reducerPath]: doctorApi.reducer,
 	auth: authReducer,
 })
 
