@@ -1,51 +1,82 @@
-import { selectAuth } from "@/store/auth/selectors";
-import { useAppSelector } from "@/store/hooks";
-import { useCheckinMutation } from "@/store/queue/api";
-import { useForm } from "@mantine/form";
-import { showNotification } from "@mantine/notifications";
-import { Text } from "@mantine/core";
+import { selectAuth } from '@/store/auth/selectors'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { useCheckinMutation } from '@/store/queue/api'
+import { useForm } from '@mantine/form'
+import { showNotification } from '@mantine/notifications'
+import { Text } from '@mantine/core'
+import { useEffect } from 'react'
+import { logout } from '@/store/auth/slice'
+import { useNavigate } from 'react-router-dom'
 
 const Checkin = ({ refetch }: { refetch?: () => void }) => {
-	const authData = useAppSelector(selectAuth);
-	const isNotTestType = authData?.information?.roomType === "Phòng khám";
+	const authData = useAppSelector(selectAuth)
+	const isNotTestType = authData?.information?.roomType === 'Phòng khám'
 
-	const [checkinMutation] = useCheckinMutation();
+	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
+	const [checkinMutation] = useCheckinMutation()
 
 	const form = useForm({
 		initialValues: {
-			qrCode: "",
+			qrCode: '',
 		},
-	});
+	})
 
 	const onSubmit = async (values: { qrCode: string }) => {
-		const { qrCode } = values;
+		const { qrCode } = values
 		await checkinMutation({ qrCode, isCheckupRecord: isNotTestType })
 			.unwrap()
 			.then(() => {
-				refetch?.();
+				refetch?.()
 			})
 			.catch(() => {
 				showNotification({
-					title: "Lỗi",
+					title: 'Lỗi',
 					message: <Text>Không tìm thấy QR. Vui lòng thử lại</Text>,
-					color: "red",
-				});
+					color: 'red',
+				})
 			})
 			.finally(() => {
-				form.reset();
-			});
-	};
+				form.reset()
+			})
+	}
+
+	const handleKeyboard = ({
+		repeat,
+		metaKey,
+		ctrlKey,
+		shiftKey,
+		key,
+	}: globalThis.KeyboardEvent): any => {
+		if (repeat) return
+
+		// Handle both, `ctrl` and `meta`.
+		if ((metaKey || ctrlKey) && shiftKey && key === 'L') {
+			dispatch(logout())
+		}
+	}
+
+	useEffect(() => {
+		document.addEventListener('keydown', (e) => handleKeyboard(e))
+
+		// Important to remove the listeners.
+		return () =>
+			document.removeEventListener('keydown', (e) => handleKeyboard(e))
+	})
 
 	return (
-		<form style={{ opacity: 0, position: "fixed" }} onSubmit={form.onSubmit(onSubmit)}>
+		<form
+			style={{ opacity: 0, position: 'fixed' }}
+			onSubmit={form.onSubmit(onSubmit)}
+		>
 			<input
-				{...form.getInputProps("qrCode")}
+				{...form.getInputProps('qrCode')}
 				onBlur={(e) => e.currentTarget.focus()}
 				autoFocus={true}
 				autoComplete="off"
 			/>
 			<button hidden type="submit" />
 		</form>
-	);
-};
-export default Checkin;
+	)
+}
+export default Checkin
