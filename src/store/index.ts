@@ -15,6 +15,7 @@ import { api } from '@/store/api'
 import { doctorApi } from '@/store/doctorApi'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
 import { rtkQueryErrorLogger } from './middleware/apiListener'
+import { queueApi } from './queue/api'
 
 const persistConfig = {
 	key: 'root',
@@ -25,6 +26,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
 	[api.reducerPath]: api.reducer,
 	[doctorApi.reducerPath]: doctorApi.reducer,
+	[queueApi.reducerPath]: queueApi.reducer,
 	auth: authReducer,
 })
 
@@ -37,7 +39,12 @@ export const store = configureStore({
 			serializableCheck: {
 				ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
 			},
-		}).concat(api.middleware, rtkQueryErrorLogger),
+		}).concat(
+			api.middleware,
+			queueApi.middleware,
+			doctorApi.middleware,
+			rtkQueryErrorLogger
+		),
 })
 
 setupListeners(store.dispatch)

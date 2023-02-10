@@ -6,14 +6,13 @@ import { showNotification } from '@mantine/notifications'
 import { Text } from '@mantine/core'
 import { useEffect } from 'react'
 import { logout } from '@/store/auth/slice'
-import { useNavigate } from 'react-router-dom'
+import { QueueDetail } from '@/entities/queue'
 
 const Checkin = ({ refetch }: { refetch?: () => void }) => {
 	const authData = useAppSelector(selectAuth)
 	const isNotTestType = authData?.information?.roomType === 'Phòng khám'
 
 	const dispatch = useAppDispatch()
-	const navigate = useNavigate()
 	const [checkinMutation] = useCheckinMutation()
 
 	const form = useForm({
@@ -26,9 +25,6 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 		const { qrCode } = values
 		await checkinMutation({ qrCode, isCheckupRecord: isNotTestType })
 			.unwrap()
-			.then(() => {
-				refetch?.()
-			})
 			.catch(() => {
 				showNotification({
 					title: 'Lỗi',

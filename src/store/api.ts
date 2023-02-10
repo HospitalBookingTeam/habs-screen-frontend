@@ -16,7 +16,7 @@ const baseQuery = fetchBaseQuery({
 	},
 })
 
-const baseQueryWithRetry = retry(baseQuery, { maxRetries: 2 })
+export const baseQueryWithRetry = retry(baseQuery, { maxRetries: 2 })
 
 /**
  * Create a base API to inject endpoints into elsewhere.
@@ -49,9 +49,3 @@ export const api = createApi({
 	 */
 	endpoints: () => ({}),
 })
-
-// export const enhancedApi = api.enhanceEndpoints({
-// 	endpoints: () => ({
-// 		getPost: () => 'test',
-// 	}),
-// })
