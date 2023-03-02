@@ -1,4 +1,5 @@
 import { AuthForm } from '@/entities/auth'
+import { persistor } from '@/store'
 import {
 	useGetRoomListQuery,
 	useGetTestRoomListQuery,
@@ -73,6 +74,7 @@ const Login = () => {
 	})
 
 	const onSubmit = async (values: AuthForm) => {
+		persistor.persist()
 		await login({ ...values })
 			.unwrap()
 			.then(() => navigate('/'))

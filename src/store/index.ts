@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import storage from 'redux-persist/es/storage'
 import authReducer from './auth/slice'
+import configReducer from './config/slice'
 import {
 	persistStore,
 	persistReducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
 	[doctorApi.reducerPath]: doctorApi.reducer,
 	[queueApi.reducerPath]: queueApi.reducer,
 	auth: authReducer,
+	config: configReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

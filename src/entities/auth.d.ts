@@ -9,6 +9,7 @@ export interface AuthUser {
 	roomTypeId: number
 	department: string
 	roomType: string
+	doctor: string
 }
 
 export type AuthState = {

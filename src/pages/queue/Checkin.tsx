@@ -7,6 +7,8 @@ import { Text } from '@mantine/core'
 import { useEffect } from 'react'
 import { logout } from '@/store/auth/slice'
 import { QueueDetail } from '@/entities/queue'
+import { clearConfig } from '@/store/config/slice'
+import { persistor } from '@/store'
 
 const Checkin = ({ refetch }: { refetch?: () => void }) => {
 	const authData = useAppSelector(selectAuth)
@@ -49,6 +51,11 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 		// Handle both, `ctrl` and `meta`.
 		if ((metaKey || ctrlKey) && shiftKey && key === 'L') {
 			dispatch(logout())
+			dispatch(clearConfig())
+			persistor.pause()
+			persistor.flush().then(() => {
+				return persistor.purge()
+			})
 		}
 	}
 
