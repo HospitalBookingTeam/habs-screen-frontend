@@ -1,3 +1,5 @@
+import { SessionType } from '@/utils/renderEnums'
+
 export interface CheckinRequest {
 	isCheckupRecord: boolean
 	qrCode: string
@@ -11,6 +13,7 @@ export type QueueDetail = {
 	patientName: string
 	patientId: number
 	isReExam: boolean
+	session: SessionType
 }
 
 export interface TestDetail {

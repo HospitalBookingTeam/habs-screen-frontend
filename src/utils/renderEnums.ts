@@ -97,3 +97,20 @@ export const translateTestRecordStatus = (status: number) =>
 	TEST_RECORD_TRANSLATION[
 		TestRecordStatus[status] as keyof typeof TestRecordStatus
 	]
+
+export enum SessionType {
+	SANG,
+	CHIEU,
+	TOI,
+}
+
+export const SESSION_TRANSLATION: {
+	[key in keyof typeof SessionType]: string
+} = {
+	SANG: 'Sáng',
+	CHIEU: 'Chiều',
+	TOI: 'Tối',
+}
+
+export const translateSession = (status: number) =>
+	SESSION_TRANSLATION[SessionType[status] as keyof typeof SessionType]
