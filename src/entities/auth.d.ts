@@ -10,6 +10,7 @@ export interface AuthUser {
 	department: string
 	roomType: string
 	doctor: string
+	isCheckupRoom: boolean
 }
 
 export type AuthState = {

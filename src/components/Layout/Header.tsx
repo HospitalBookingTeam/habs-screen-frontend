@@ -61,20 +61,27 @@ const SimpleHeader = () => {
 		}
 	}, [isAuthenticated])
 
+	const roomName = information?.isCheckupRoom
+		? `${information?.roomType} ${information?.department?.toLowerCase()} ${
+				information?.roomNumber
+		  } - Tầng ${information?.floor}`
+		: `${information?.roomType} ${information?.roomNumber} - Tầng ${information?.floor}`
+
 	return (
 		<div className={classes.header}>
 			<Container size="xl" className={classes.mainSection}>
 				<Group position="apart">
 					<Text color="white" size="xl">
-						{information?.roomType ?? '---'}{' '}
-						{information?.department?.toLowerCase()}{' '}
-						{information?.roomNumber ?? '---'} - Tầng{' '}
-						{information?.floor ?? '---'}
+						{roomName}
 					</Text>
 					<Group>
-						<Text color="white" weight={'bolder'}>
-							Bác sĩ phụ trách: {information?.doctor}
-						</Text>
+						{information?.isCheckupRoom ? (
+							<Text color="white" weight={'bolder'}>
+								Bác sĩ phụ trách: {information?.doctor}
+							</Text>
+						) : (
+							<></>
+						)}
 						<Clock />
 					</Group>
 				</Group>
