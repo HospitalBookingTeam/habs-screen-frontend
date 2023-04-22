@@ -76,9 +76,15 @@ const SimpleHeader = () => {
 					</Text>
 					<Group>
 						{information?.isCheckupRoom ? (
-							<Text color="white" weight={'bolder'}>
-								Bác sĩ phụ trách: {information?.doctor}
-							</Text>
+							information?.doctor ? (
+								<Text color="white" weight={'bolder'}>
+									Bác sĩ phụ trách: {information?.doctor}
+								</Text>
+							) : (
+								<Text color="white" size="sm">
+									Ngoài giờ làm việc
+								</Text>
+							)
 						) : (
 							<></>
 						)}

@@ -1,12 +1,11 @@
 import { selectAuth } from '@/store/auth/selectors'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { useCheckinMutation } from '@/store/queue/api'
+import { useCheckinMutation, useCheckinTestMutation } from '@/store/queue/api'
 import { useForm } from '@mantine/form'
 import { showNotification } from '@mantine/notifications'
 import { Text } from '@mantine/core'
 import { useEffect } from 'react'
 import { logout } from '@/store/auth/slice'
-import { QueueDetail } from '@/entities/queue'
 import { clearConfig } from '@/store/config/slice'
 import { persistor } from '@/store'
 
@@ -16,6 +15,7 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 
 	const dispatch = useAppDispatch()
 	const [checkinMutation] = useCheckinMutation()
+	const [checkinTestMutation] = useCheckinTestMutation()
 
 	const form = useForm({
 		initialValues: {
@@ -25,8 +25,53 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 
 	const onSubmit = async (values: { qrCode: string }) => {
 		const { qrCode } = values
-		await checkinMutation({ qrCode, isCheckupRecord: isNotTestType })
+		if (isNotTestType) {
+			await checkinMutation({ qrCode })
+				.unwrap()
+				.then((resp) => {
+					const { message, success } = resp
+					if (success) {
+						showNotification({
+							title: message,
+							message: <></>,
+						})
+					} else {
+						showNotification({
+							title: message,
+							message: <></>,
+							color: 'red',
+						})
+					}
+				})
+				.catch(() => {
+					showNotification({
+						title: 'Lỗi',
+						message: <Text>Không tìm thấy QR. Vui lòng thử lại</Text>,
+						color: 'red',
+					})
+				})
+				.finally(() => {
+					form.reset()
+				})
+			return
+		}
+		await checkinTestMutation({ qrCode })
 			.unwrap()
+			.then((resp) => {
+				const { message, success } = resp
+				if (success) {
+					showNotification({
+						title: message,
+						message: <></>,
+					})
+				} else {
+					showNotification({
+						title: message,
+						message: <></>,
+						color: 'red',
+					})
+				}
+			})
 			.catch(() => {
 				showNotification({
 					title: 'Lỗi',

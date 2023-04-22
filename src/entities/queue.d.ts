@@ -5,14 +5,16 @@ export interface CheckinRequest {
 	qrCode: string
 }
 
-export type QueueDetail = {
+export interface QueueDetail {
 	id: number
 	status: number
 	numericalOrder: number
 	estimatedStartTime: string
+	checkinTime: string
 	patientName: string
 	patientId: number
 	isReExam: boolean
+	isKickedFromQueue?: any
 	session: SessionType
 }
 
@@ -32,4 +34,16 @@ export interface TestDetail {
 	checkupRecordId: number
 	doctorName: any
 	doctorId: any
+}
+
+export type ICheckinResponse = {
+	message: string
+	success: boolean
+	queue: QueueDetail[]
+}
+
+export type ICheckinTestResponse = {
+	message: string
+	success: boolean
+	queue: TestDetail[]
 }

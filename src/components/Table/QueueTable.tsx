@@ -15,6 +15,7 @@ import {
 	Loader,
 	Stack,
 } from '@mantine/core'
+import dayjs from 'dayjs'
 
 interface QueueTableProps {
 	data?: QueueDetail[]
@@ -32,27 +33,39 @@ const QueueTable = ({ data, isLoading }: QueueTableProps) => {
 
 	const rows = data?.map((item, index) => {
 		const isEven = index % 2 === 0
+		const isCheckedInAfterTest =
+			item.status === CheckupRecordStatus.CHECKED_IN_SAU_XN
 
+		const isLate =
+			dayjs(item.checkinTime).isAfter(item.estimatedStartTime) &&
+			!isCheckedInAfterTest
 		return (
 			<Grid
 				key={item.id}
 				sx={{
-					backgroundColor: isEven ? 'white' : theme.colors.gray[0],
+					backgroundColor: isCheckedInAfterTest
+						? theme.colors.green[1]
+						: isLate
+						? theme.colors.red[1]
+						: isEven
+						? 'white'
+						: theme.colors.gray[0],
 					width: '100%',
 				}}
 				py="md"
 			>
-				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
-					{item.numericalOrder}
+				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
+					<Text size="xl">{item.numericalOrder}</Text>
 				</Grid.Col>
 				<Grid.Col span={3}>
-					<Text size="sm" weight={500}>
+					<Text size="xl" weight={500}>
 						{item.patientName}
 					</Text>
 				</Grid.Col>
 
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					<Badge
+						size="xl"
 						color={statusColors[item.status]}
 						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
 					>
@@ -60,15 +73,20 @@ const QueueTable = ({ data, isLoading }: QueueTableProps) => {
 					</Badge>
 				</Grid.Col>
 
-				<Grid.Col span={3}>
-					<Text align="center">
+				<Grid.Col span={2}>
+					<Text size="xl" align="center">
 						{formatDate(item?.estimatedStartTime, 'HH:mm')}
+					</Text>
+				</Grid.Col>
+				<Grid.Col span={2}>
+					<Text size="xl" align="center">
+						{formatDate(item?.checkinTime, 'HH:mm')}
 					</Text>
 				</Grid.Col>
 				<Grid.Col span={2}>
 					<Text align="center">
 						<Badge
-							size="md"
+							size="xl"
 							color={
 								item?.session == 0
 									? 'green'
@@ -88,15 +106,18 @@ const QueueTable = ({ data, isLoading }: QueueTableProps) => {
 	return (
 		<>
 			<Grid color="gray.1" pb="md" sx={{ width: '100%' }}>
-				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
-					Số khám bệnh
+				<Grid.Col span={1} sx={{ textAlign: 'center' }}>
+					SKB
 				</Grid.Col>
 				<Grid.Col span={3}>Tên người bệnh</Grid.Col>
 				<Grid.Col span={2} sx={{ textAlign: 'center' }}>
 					Trạng thái
 				</Grid.Col>
-				<Grid.Col span={3}>
-					<Text align="center">Thời gian dự kiến</Text>
+				<Grid.Col span={2}>
+					<Text align="center">Giờ dự kiến</Text>
+				</Grid.Col>
+				<Grid.Col span={2}>
+					<Text align="center">Giờ check in</Text>
 				</Grid.Col>
 				<Grid.Col span={2}>
 					<Text align="center">Ca khám</Text>

@@ -1,4 +1,10 @@
-import { CheckinRequest, QueueDetail, TestDetail } from '@/entities/queue'
+import {
+	CheckinRequest,
+	ICheckinResponse,
+	ICheckinTestResponse,
+	QueueDetail,
+	TestDetail,
+} from '@/entities/queue'
 import { createApi } from '@reduxjs/toolkit/dist/query/react'
 import { baseQueryWithRetry } from '../api'
 
@@ -27,35 +33,68 @@ export const queueApi = createApi({
 				{ type: 'Queue' as const, id: 'TEST_LIST' },
 			],
 		}),
-		checkin: build.mutation<(QueueDetail | TestDetail)[], CheckinRequest>({
+		checkin: build.mutation<
+			ICheckinResponse,
+			Omit<CheckinRequest, 'isCheckupRecord'>
+		>({
 			query: (body) => ({
 				url: `checkin`,
 				method: 'POST',
-				body,
+				body: {
+					...body,
+					isCheckupRecord: true,
+				},
 			}),
 			async onQueryStarted({ ...patch }, { dispatch, queryFulfilled }) {
 				try {
 					const { data: updatedData } = await queryFulfilled
-					let patchResult
-					patchResult = dispatch(
-						queueApi.util.updateQueryData('getQueue', undefined, (draft) => {
-							return updatedData as QueueDetail[]
-						})
-					)
-					patchResult = dispatch(
-						queueApi.util.updateQueryData(
-							'getTestQueue',
-							undefined,
-							(draft) => {
-								return updatedData as TestDetail[]
-							}
+					const { success, queue } = updatedData
+					if (success) {
+						dispatch(
+							queueApi.util.updateQueryData('getQueue', undefined, (draft) => {
+								return queue as QueueDetail[]
+							})
 						)
-					)
+					}
+				} catch {}
+			},
+		}),
+		checkinTest: build.mutation<
+			ICheckinTestResponse,
+			Omit<CheckinRequest, 'isCheckupRecord'>
+		>({
+			query: (body) => ({
+				url: `checkin`,
+				method: 'POST',
+				body: {
+					...body,
+					isCheckupRecord: false,
+				},
+			}),
+			async onQueryStarted({ ...patch }, { dispatch, queryFulfilled }) {
+				try {
+					const { data: updatedData } = await queryFulfilled
+					const { success, queue } = updatedData
+					if (success) {
+						dispatch(
+							queueApi.util.updateQueryData(
+								'getTestQueue',
+								undefined,
+								(draft) => {
+									return queue as TestDetail[]
+								}
+							)
+						)
+					}
 				} catch {}
 			},
 		}),
 	}),
 })
 
-export const { useGetQueueQuery, useGetTestQueueQuery, useCheckinMutation } =
-	queueApi
+export const {
+	useGetQueueQuery,
+	useGetTestQueueQuery,
+	useCheckinMutation,
+	useCheckinTestMutation,
+} = queueApi
