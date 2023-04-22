@@ -25,7 +25,7 @@ interface QueueTableProps {
 const statusColors: Record<number, string> = {
 	[CheckupRecordStatus.CHECKED_IN]: 'green',
 	[CheckupRecordStatus.DANG_KHAM]: 'cyan',
-	[CheckupRecordStatus.CHECKED_IN_SAU_XN]: 'pink',
+	[CheckupRecordStatus.CHECKED_IN_SAU_XN]: 'blue',
 }
 
 const QueueTable = ({ data, isLoading }: QueueTableProps) => {
@@ -43,13 +43,15 @@ const QueueTable = ({ data, isLoading }: QueueTableProps) => {
 			<Grid
 				key={item.id}
 				sx={{
-					backgroundColor: isCheckedInAfterTest
-						? theme.colors.green[1]
-						: isLate
-						? theme.colors.red[1]
-						: isEven
-						? 'white'
-						: theme.colors.gray[0],
+					backgroundColor:
+						// isCheckedInAfterTest
+						// 	? theme.colors.green[1]
+						// 	:
+						isLate
+							? theme.colors.red[1]
+							: isEven
+							? 'white'
+							: theme.colors.gray[0],
 					width: '100%',
 				}}
 				py="md"
@@ -67,7 +69,8 @@ const QueueTable = ({ data, isLoading }: QueueTableProps) => {
 					<Badge
 						size="xl"
 						color={statusColors[item.status]}
-						variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
+						// variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
+						variant="light"
 					>
 						{translateCheckupRecordStatus(item.status, item.isReExam)}
 					</Badge>
@@ -94,6 +97,7 @@ const QueueTable = ({ data, isLoading }: QueueTableProps) => {
 									? 'blue'
 									: 'orange'
 							}
+							variant="outline"
 						>
 							{translateSession(item?.session)}
 						</Badge>
