@@ -58,6 +58,9 @@ export const queueApi = createApi({
 					}
 				} catch {}
 			},
+			extraOptions: {
+				maxRetries: 0,
+			},
 		}),
 		checkinTest: build.mutation<
 			ICheckinTestResponse,
@@ -87,6 +90,9 @@ export const queueApi = createApi({
 						)
 					}
 				} catch {}
+			},
+			extraOptions: {
+				maxRetries: 0,
 			},
 		}),
 	}),

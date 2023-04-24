@@ -4,18 +4,24 @@ import { useCheckinMutation, useCheckinTestMutation } from '@/store/queue/api'
 import { useForm } from '@mantine/form'
 import { showNotification } from '@mantine/notifications'
 import { Text } from '@mantine/core'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { logout } from '@/store/auth/slice'
 import { clearConfig } from '@/store/config/slice'
 import { persistor } from '@/store'
+import _ from 'lodash'
+
+const WAIT_BEFORE_NEXT_QR = 2000 //ms
 
 const Checkin = ({ refetch }: { refetch?: () => void }) => {
 	const authData = useAppSelector(selectAuth)
 	const isNotTestType = authData?.information?.roomType === 'Phòng khám'
 
 	const dispatch = useAppDispatch()
-	const [checkinMutation] = useCheckinMutation()
-	const [checkinTestMutation] = useCheckinTestMutation()
+	const [checkinMutation, { isLoading: isLoadingCheckin }] =
+		useCheckinMutation()
+	const [checkinTestMutation, { isLoading: isLoadingCheckinTest }] =
+		useCheckinTestMutation()
+	const [isQrAvailable, setIsQrAvailable] = useState(true)
 
 	const form = useForm({
 		initialValues: {
@@ -25,6 +31,8 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 
 	const onSubmit = async (values: { qrCode: string }) => {
 		const { qrCode } = values
+
+		// if (!isQrAvailable) return
 		if (isNotTestType) {
 			await checkinMutation({ qrCode })
 				.unwrap()
@@ -53,6 +61,9 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 				.finally(() => {
 					form.reset()
 				})
+
+			// setIsQrAvailable(false)
+			// setTimeout(() => setIsQrAvailable(true), WAIT_BEFORE_NEXT_QR)
 			return
 		}
 		await checkinTestMutation({ qrCode })
@@ -82,7 +93,11 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 			.finally(() => {
 				form.reset()
 			})
+		// setIsQrAvailable(false)
+		// setTimeout(() => setIsQrAvailable(true), WAIT_BEFORE_NEXT_QR)
 	}
+
+	const bouncedSubmit = _.debounce(onSubmit, 2000)
 
 	const handleKeyboard = ({
 		repeat,
@@ -123,7 +138,11 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 				autoFocus={true}
 				autoComplete="off"
 			/>
-			<button hidden type="submit" />
+			<button
+				hidden
+				type="submit"
+				disabled={isNotTestType ? isLoadingCheckin : isLoadingCheckinTest}
+			/>
 		</form>
 	)
 }
