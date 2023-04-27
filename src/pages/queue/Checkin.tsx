@@ -51,10 +51,10 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 						})
 					}
 				})
-				.catch(() => {
+				.catch(({ message }) => {
 					showNotification({
-						title: 'Lỗi',
-						message: <Text>Không tìm thấy QR. Vui lòng thử lại</Text>,
+						title: message,
+						message: <></>,
 						color: 'red',
 					})
 				})
@@ -83,10 +83,10 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 					})
 				}
 			})
-			.catch(() => {
+			.catch(({ message }) => {
 				showNotification({
-					title: 'Lỗi',
-					message: <Text>Không tìm thấy QR. Vui lòng thử lại</Text>,
+					title: message,
+					message: <></>,
 					color: 'red',
 				})
 			})
