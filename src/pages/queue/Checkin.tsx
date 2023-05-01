@@ -51,7 +51,8 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 						})
 					}
 				})
-				.catch(({ message }) => {
+				.catch(({ data: { message } }) => {
+					console.log('message', message)
 					showNotification({
 						title: message,
 						message: <></>,
@@ -83,7 +84,8 @@ const Checkin = ({ refetch }: { refetch?: () => void }) => {
 					})
 				}
 			})
-			.catch(({ message }) => {
+			.catch(({ data: { message } }) => {
+				console.log('message', message)
 				showNotification({
 					title: message,
 					message: <></>,
