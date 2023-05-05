@@ -19,9 +19,14 @@ export const authSlice = createSlice({
 			return state
 		},
 		updateAuthInfo: (state, action) => {
+			const { doctorName, ...rest } = action.payload
 			return {
 				...state,
-				information: { ...state.information, ...action.payload },
+				information: {
+					...state.information,
+					doctor: doctorName,
+					...rest,
+				},
 			}
 		},
 	},
