@@ -1,11 +1,12 @@
 import { selectAuth } from '@/store/auth/selectors'
 import { logout } from '@/store/auth/slice'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { formatRoomLabel } from '@/utils/formats'
-import { createStyles, Container, Button, Group, Text } from '@mantine/core'
+import { createStyles, Container, Box, Group, Text } from '@mantine/core'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Clock from '../Clock'
+import { translateSession } from '@/utils/renderEnums'
+import { formatDate } from '@/utils/formats'
 
 const useStyles = createStyles((theme) => ({
 	header: {
@@ -14,38 +15,15 @@ const useStyles = createStyles((theme) => ({
 			variant: 'filled',
 			color: theme.primaryColor,
 		}).background,
-		borderBottom: `1px solid ${
-			theme.fn.variant({ variant: 'filled', color: theme.primaryColor })
-				.background
-		}`,
+		// borderBottom: `1px solid ${
+		// 	theme.fn.variant({ variant: 'filled', color: theme.primaryColor })
+		// 		.background
+		// }`,
 		marginBottom: 0,
 	},
 
 	mainSection: {
 		paddingBottom: theme.spacing.sm,
-	},
-	searchInput: {
-		minWidth: 250,
-		height: 36,
-		paddingLeft: theme.spacing.sm,
-		paddingRight: 5,
-		borderRadius: theme.radius.md,
-		color:
-			theme.colorScheme === 'dark'
-				? theme.colors.dark[2]
-				: theme.colors.gray[5],
-		backgroundColor:
-			theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
-		border: `1px solid ${
-			theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
-		}`,
-
-		'&:hover': {
-			backgroundColor:
-				theme.colorScheme === 'dark'
-					? theme.fn.rgba(theme.colors.dark[5], 0.85)
-					: theme.fn.rgba(theme.colors.gray[0], 0.85),
-		},
 	},
 }))
 
@@ -71,23 +49,33 @@ const SimpleHeader = () => {
 		<div className={classes.header}>
 			<Container size="xl" className={classes.mainSection}>
 				<Group position="apart">
-					<Text color="white" size="xl">
-						{roomName}
-					</Text>
 					<Group>
+						<Text color="white" size="xl" weight={'bolder'}>
+							{roomName}
+						</Text>
 						{information?.isCheckupRoom ? (
 							information?.doctor ? (
-								<Text color="white" weight={'bolder'}>
+								<Text color="white" weight={500}>
 									Bác sĩ phụ trách: {information?.doctor}
 								</Text>
 							) : (
-								<Text color="white" size="sm">
+								<Text color="white" size="sm" weight={500}>
 									Ngoài giờ làm việc
 								</Text>
 							)
 						) : (
 							<></>
 						)}
+					</Group>
+					<Group>
+						<Box>
+							<Text size="sm" color="white" weight={500}>
+								Ca {translateSession(authData?.information?.session ?? 0)}:{' '}
+								{formatDate(authData?.information?.sessionStart ?? '', 'HH:mm')}{' '}
+								- {formatDate(authData?.information?.sessionEnd ?? '', 'HH:mm')}
+							</Text>
+						</Box>
+
 						<Clock />
 					</Group>
 				</Group>

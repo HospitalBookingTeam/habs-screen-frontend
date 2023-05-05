@@ -11,6 +11,9 @@ export interface AuthUser {
 	roomType: string
 	doctor: string
 	isCheckupRoom: boolean
+	sessionStart: string
+	sessionEnd: string
+	session: number
 }
 
 export type AuthState = {

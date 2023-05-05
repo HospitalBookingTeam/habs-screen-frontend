@@ -18,6 +18,12 @@ export const authSlice = createSlice({
 			removeLocalItem('persist:root')
 			return state
 		},
+		updateAuthInfo: (state, action) => {
+			return {
+				...state,
+				information: { ...state.information, ...action.payload },
+			}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -36,6 +42,6 @@ export const authSlice = createSlice({
 	},
 })
 
-export const { logout } = authSlice.actions
+export const { logout, updateAuthInfo } = authSlice.actions
 
 export default authSlice.reducer

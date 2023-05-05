@@ -19,6 +19,19 @@ export const authApi = api.injectEndpoints({
 				},
 			},
 		}),
+		getCurrentDoctor: build.query<
+			{
+				doctorName: string
+				session: number
+				sessionStart: string
+				sessionEnd: string
+			},
+			{ id: number }
+		>({
+			query: (params) => ({
+				url: `login/${params.id}/current-doctor`,
+			}),
+		}),
 	}),
 })
 
@@ -45,6 +58,6 @@ export const doctorAuthApi = doctorApi.injectEndpoints({
 	}),
 })
 
-export const { useLoginMutation } = authApi
+export const { useLoginMutation, useLazyGetCurrentDoctorQuery } = authApi
 
 export const { useGetRoomListQuery, useGetTestRoomListQuery } = doctorAuthApi

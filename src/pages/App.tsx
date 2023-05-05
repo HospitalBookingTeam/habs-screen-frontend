@@ -1,11 +1,13 @@
 import { lazy, Suspense, useEffect, useLayoutEffect } from 'react'
 import { Routes, Route, Outlet, Navigate, useNavigate } from 'react-router-dom'
 import { Container, LoadingOverlay } from '@mantine/core'
-import { selectIsAuthenticated } from '@/store/auth/selectors'
-import { useAppSelector } from '@/store/hooks'
+import { selectAuth, selectIsAuthenticated } from '@/store/auth/selectors'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import SimpleVerticalLayout from '@/components/Layout/SimpleVerticalLayout'
 import { selectTime } from '@/store/config/selectors'
 import { useLazyGetTimeQuery } from '@/store/config/api'
+import { useLazyGetCurrentDoctorQuery } from '@/store/auth/api'
+import { updateAuthInfo } from '@/store/auth/slice'
 
 const Login = lazy(() => import('@/pages/auth'))
 const Queue = lazy(() => import('@/pages/queue'))
@@ -14,8 +16,12 @@ const NotFound = lazy(() => import('@/components/NotFound/NotFoundPage'))
 
 function App() {
 	const isAuthenticated = useAppSelector(selectIsAuthenticated)
+	const authData = useAppSelector(selectAuth)
 	const configTime = useAppSelector(selectTime)
 	const [triggerTimeConfig] = useLazyGetTimeQuery()
+	const [triggerGetDoctor] = useLazyGetCurrentDoctorQuery()
+	const dispatch = useAppDispatch()
+
 	useEffect(() => {
 		const getTime = async () => {
 			await triggerTimeConfig()
@@ -24,6 +30,17 @@ function App() {
 			getTime()
 		}
 	}, [isAuthenticated, configTime])
+
+	useEffect(() => {
+		const getDoc = async (id: number) => {
+			await triggerGetDoctor({ id })
+				.unwrap()
+				.then((resp) => dispatch(updateAuthInfo({ ...resp })))
+		}
+		if (isAuthenticated && authData?.information?.id) {
+			getDoc(authData?.information?.id)
+		}
+	}, [isAuthenticated])
 	return (
 		<Suspense fallback={<LoadingOverlay visible={true} />}>
 			<Routes>

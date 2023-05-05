@@ -111,7 +111,7 @@ const Login = () => {
 							withAsterisk={true}
 							autoComplete="current-password"
 							label="Mật khẩu"
-							placeholder="123"
+							placeholder="Vui lòng nhập"
 							mt="md"
 							size="md"
 							{...form.getInputProps('password')}

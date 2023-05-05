@@ -1,6 +1,9 @@
+import { useLazyGetCurrentDoctorQuery } from '@/store/auth/api'
+import { selectAuth } from '@/store/auth/selectors'
+import { updateAuthInfo } from '@/store/auth/slice'
 import { useLazyGetTimeQuery } from '@/store/config/api'
 import { selectTime } from '@/store/config/selectors'
-import { useAppSelector } from '@/store/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { formatDate } from '@/utils/formats'
 import { Group, Badge, Tooltip, Button } from '@mantine/core'
 import dayjs from 'dayjs'
@@ -13,6 +16,9 @@ const Clock = () => {
 	)
 	const configTime = useAppSelector(selectTime)
 	const [triggerTimeConfig] = useLazyGetTimeQuery()
+	const authData = useAppSelector(selectAuth)
+	const [triggerGetDoctor] = useLazyGetCurrentDoctorQuery()
+	const dispatch = useAppDispatch()
 
 	useEffect(() => {
 		setCurrentTime(
@@ -33,7 +39,12 @@ const Clock = () => {
 	}, [configTime])
 
 	const updateTimeConfig = async () => {
-		await triggerTimeConfig()
+		triggerTimeConfig()
+		if (authData?.information?.id) {
+			triggerGetDoctor({ id: authData?.information?.id })
+				.unwrap()
+				.then((resp) => dispatch(updateAuthInfo({ ...resp })))
+		}
 	}
 
 	return (
