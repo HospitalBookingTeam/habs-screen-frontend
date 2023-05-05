@@ -68,13 +68,21 @@ const SimpleHeader = () => {
 						)}
 					</Group>
 					<Group>
-						<Box>
-							<Text size="sm" color="white" weight={500}>
-								Ca {translateSession(authData?.information?.session ?? 0)}:{' '}
-								{formatDate(authData?.information?.sessionStart ?? '', 'HH:mm')}{' '}
-								- {formatDate(authData?.information?.sessionEnd ?? '', 'HH:mm')}
-							</Text>
-						</Box>
+						{information?.isCheckupRoom ? (
+							<Box>
+								<Text size="sm" color="white" weight={500}>
+									Ca {translateSession(authData?.information?.session ?? 0)}:{' '}
+									{formatDate(
+										authData?.information?.sessionStart ?? '',
+										'HH:mm'
+									)}{' '}
+									-{' '}
+									{formatDate(authData?.information?.sessionEnd ?? '', 'HH:mm')}
+								</Text>
+							</Box>
+						) : (
+							<></>
+						)}
 
 						<Clock />
 					</Group>
